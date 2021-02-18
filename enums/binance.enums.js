@@ -25,4 +25,5 @@ export const BALACES_TYPE = {
 export const binance_endpoints = {
   getMarginAccount: 'getMarginAccount',
   getMarginAccountAll: 'getMarginAccountAll',
+  getSymbolMarginTradesHistory: 'getSymbolMarginTradesHistory',
 }

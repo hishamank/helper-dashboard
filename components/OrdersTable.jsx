@@ -27,7 +27,6 @@ const rows = [
 ];
 
 function OrdersTable(props) {
-    console.log('bbbbbbb', props)
   const classes = useStyles();
   return (
     <TableContainer component={Paper}>
@@ -58,19 +57,5 @@ function OrdersTable(props) {
     </TableContainer>
   );
 }
-
-export async function getServerSideProps(context) {
-    const binanceInstance = new binanceService();
-    try {
-      const res = await binanceInstance.getAllMarginTradesForSymbol('EOSBTC');
-      return {
-        props: {data: res.data}, // will be passed to the page component as props
-      }
-    } catch (er) {
-      return {
-        props: {error: err}, // will be passed to the page component as props
-      }
-    }
-  }
 
 export default OrdersTable;

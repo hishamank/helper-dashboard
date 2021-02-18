@@ -94,8 +94,8 @@ const useStyles = makeStyles((theme) => ({
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
+    props.itemClick(name);
     let newSelected = [];
-
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, name);
     } else if (selectedIndex === 0) {
@@ -108,8 +108,8 @@ const useStyles = makeStyles((theme) => ({
         selected.slice(selectedIndex + 1),
       );
     }
-
     setSelected(newSelected);
+
   };
 
   const handleChangePage = (event, newPage) => {
