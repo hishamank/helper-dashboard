@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import OrdersTable from '../components/OrdersTable';
 import EnhancedTable from '../components/Table/EnhancedTable';
 import binanceService from '../services/binance'
 
@@ -29,10 +30,15 @@ export default class Home extends Component {
     }
   }
   render() {
+    if(this.state.error) {
+      return <div>Something went wrong, or no Assets</div>
+    }
     return (
       <div>
-        {this.state.error ? "Something went wrong, or no Assets"  : <EnhancedTable rows={this.state.rows} headCells={headCells}/>}
+         <EnhancedTable rows={this.state.rows} headCells={headCells}/>
+          <OrdersTable></OrdersTable>
       </div>
+      
     )
   }
 }
