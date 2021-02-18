@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { Component } from 'react'
 import EnhancedTable from '../components/Table/EnhancedTable';
-
+import binanceService from '../services/binance';
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -29,7 +29,21 @@ const rows = [
   createData('Oreo', 437, 18.0, 63, 4.0),
 ];
 
-export default function Home(){
 
-  return <EnhancedTable rows={rows} headCells={headCells}/>
+export default class Home extends Component {
+  getStaticProps() {
+
+  }
+  binanceInstance = null;
+  componentDidMount() {
+    console.log(this.props)
+  }
+  render() {
+    return (
+      <div>
+        <EnhancedTable rows={rows} headCells={headCells}/>
+      </div>
+    )
+  }
 }
+
