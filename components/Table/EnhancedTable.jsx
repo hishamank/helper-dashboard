@@ -179,7 +179,7 @@ const useStyles = makeStyles((theme) => ({
                       <TableCell align="right">{row.indexPrice}</TableCell>
                       <TableCell align="right">{row.liquidatePrice}</TableCell>
                       <TableCell align="right">{row.liquidateRate}</TableCell>
-                      <TableCell align="right">{row.marginLevel}</TableCell>
+                      <TableCell align="right"style={row.marginLevel > 1.5 ? {color: 'green'} : row.marginLevel < 1.3 ? {color: 'red'} : {color : 'yellow'}} >{row.marginLevel}</TableCell>
                     </TableRow>
                   );
                 })}
