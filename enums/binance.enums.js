@@ -1,4 +1,4 @@
-const ORDER_TYPES = {
+export const ORDER_TYPES = {
   limit: 'LIMIT',
   market: 'MARKET',
   stop_loss: 'STOP_LOSS',
@@ -8,7 +8,7 @@ const ORDER_TYPES = {
   limit_makes: 'LIMIT_MAKER',
 };
 
-const TIME_IN_FORCE = {
+export const TIME_IN_FORCE = {
   // An order will be on the book unless the order is canceled.
   good_till_cancel: 'GTC',
   // An order will try to fill the order as much as it can before the order expires.
@@ -17,13 +17,11 @@ const TIME_IN_FORCE = {
   fill_or_kill: 'FOK'
 }
 
-const BALACES_TYPE = {
+export const BALACES_TYPE = {
   spot: 'SPOT',
   margin: 'MARGIN'
 }
 
-module.exports = {
-  ORDER_TYPES,
-  TIME_IN_FORCE,
-  BALACES_TYPE,
+export const BINANCE_API_ENDPOINT = {
+  getMarginAccount: 'getMarginAccount'
 }

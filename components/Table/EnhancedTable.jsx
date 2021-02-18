@@ -85,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = props.rows.map((n) => n.name);
+      const newSelecteds = props.rows.map((n) => n.symbol);
       setSelected(newSelecteds);
       return;
     }
@@ -154,17 +154,17 @@ const useStyles = makeStyles((theme) => ({
               {stableSort(props.rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.symbol);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, row.symbol)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.symbol}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -174,12 +174,12 @@ const useStyles = makeStyles((theme) => ({
                         />
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row" padding="none">
-                        {row.name}
+                        {row.symbol}
                       </TableCell>
-                      <TableCell align="right">{row.calories}</TableCell>
-                      <TableCell align="right">{row.fat}</TableCell>
-                      <TableCell align="right">{row.carbs}</TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
+                      <TableCell align="right">{row.indexPrice}</TableCell>
+                      <TableCell align="right">{row.liquidatePrice}</TableCell>
+                      <TableCell align="right">{row.liquidateRate}</TableCell>
+                      <TableCell align="right">{row.marginLevel}</TableCell>
                     </TableRow>
                   );
                 })}

@@ -4,7 +4,7 @@ const binanceInstance = new binanceService();
 
 const in_symbols = ['DASHUSDT', 'EOSUSDT', 'LTCBTC', 'REEFBTC', 'ZECBTC' ]
 
-binanceInstance.getAllMarginIsolatedSymbols(in_symbols).then(res => {
+binanceInstance.getMarginIsolatedForSymbols(in_symbols).then(res => {
   console.log(res.data);
 })
 
