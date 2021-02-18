@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import EnhancedTable from '../components/Table/EnhancedTable';
-import Axios from 'axios';
+import binanceService from '../services/binance'
 
 
 const headCells = [
@@ -13,21 +13,41 @@ const headCells = [
 
 export default class Home extends Component {
   state = {
-    rows: []
+    rows: [],
+    error: null
   }
   componentDidMount() {
-    Axios.get('/api/bnc/getMarginAccountAll').then(res => {
+    if (!this.props.error && this.props.data && this.props.data.assets.length > 0) {
       this.setState({
-        rows: [...res.data.assets.filter(asset => asset.liquidatePrice !== '0')]
+        rows: [...this.props.data.assets.filter(asset => asset.liquidatePrice !== '0')]
       }, () => console.log(this.state))
-    })
+    } else {
+      console.log('Errorr', this.props.error)
+      this.setState({
+        error: true
+      })
+    }
   }
   render() {
     return (
       <div>
-        {this.state.rows.length > 0 && <EnhancedTable rows={this.state.rows} headCells={headCells}/>}
+        {this.state.error ? "Something went wrong, or no Assets"  : <EnhancedTable rows={this.state.rows} headCells={headCells}/>}
       </div>
     )
+  }
+}
+
+export async function getServerSideProps(context) {
+  const binanceInstance = new binanceService();
+  try {
+    const res = await binanceInstance.getMarginIsolatedInfos();
+    return {
+      props: {data: res.data}, // will be passed to the page component as props
+    }
+  } catch (er) {
+    return {
+      props: {error: err}, // will be passed to the page component as props
+    }
   }
 }
 

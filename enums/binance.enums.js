@@ -22,7 +22,7 @@ export const BALACES_TYPE = {
   margin: 'MARGIN'
 }
 
-export const BINANCE_API_ENDPOINT = {
+export const binance_endpoints = {
   getMarginAccount: 'getMarginAccount',
-  getMarginAccountAll: 'getMarginAccountAll'
+  getMarginAccountAll: 'getMarginAccountAll',
 }

@@ -1,12 +1,12 @@
 import binanceService from '../../../services/binance'
-import {BINANCE_API_ENDPOINT} from '../../../enums/binance.enums';
+import {binance_endpoints} from '../../../enums/binance.enums';
 
 export default function bncHandler({ query: { id } }, res) {
 
   const binanceInstance = new binanceService();
   const in_symbols = ['DASHUSDT', 'EOSUSDT', 'LTCBTC', 'REEFBTC', 'ZECBTC' ]
   switch (id) {
-    case BINANCE_API_ENDPOINT.getMarginAccount: {
+    case binance_endpoints.getMarginAccount: {
       binanceInstance.getMarginIsolatedForSymbols(in_symbols).then(result => {
         res.status(200).json(result.data);
       }).catch(err => {
@@ -14,7 +14,15 @@ export default function bncHandler({ query: { id } }, res) {
       })
       break;
     }    
-    case BINANCE_API_ENDPOINT.getMarginAccountAll: {
+    case binance_endpoints.getMarginAccountAll: {
+      binanceInstance.getMarginIsolatedInfos().then(result => {
+        res.status(200).json(result.data);
+      }).catch(err => {
+        console.log('errror', err);
+      })
+      break;
+    }
+    case binance_endpoints.getMarginAccountAll: {
       binanceInstance.getMarginIsolatedInfos().then(result => {
         res.status(200).json(result.data);
       }).catch(err => {

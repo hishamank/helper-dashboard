@@ -173,10 +173,10 @@ class BinanceService {
   
   getAllMarginTradesForSymbol = (c_symbol, isIsolated, from, to, limit) => this.getBinanceApi('/sapi/v1/margin/myTrades', {
     symbol: c_symbol,
-    isIsolated: isIsolated,
-    limit: limit,
-    startTime: from,
-    endTime: to,
+    isIsolated: isIsolated || false,
+    limit: limit || '',
+    startTime: from || '',
+    endTime: to || '',
     timestamp: new Date().getTime()
   }, true)  
   
@@ -186,7 +186,7 @@ class BinanceService {
     timestamp: new Date().getTime()
   }, true);
 
-  getMarginIsolatedInfos = (symbols = undefined) => this.getBinanceApi('/sapi/v1/margin/isolated/account', {
+  getMarginIsolatedInfos = () => this.getBinanceApi('/sapi/v1/margin/isolated/account', {
     timestamp: new Date().getTime()
   }, true)
 
