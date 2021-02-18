@@ -16,9 +16,9 @@ export default class Home extends Component {
     rows: []
   }
   componentDidMount() {
-    Axios.get('/api/bnc/getMarginAccount').then(res => {
+    Axios.get('/api/bnc/getMarginAccountAll').then(res => {
       this.setState({
-        rows: [...res.data.assets]
+        rows: [...res.data.assets.filter(asset => asset.liquidatePrice !== '0')]
       }, () => console.log(this.state))
     })
   }

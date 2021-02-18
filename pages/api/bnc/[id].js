@@ -13,6 +13,14 @@ export default function bncHandler({ query: { id } }, res) {
         console.log('errror', err);
       })
       break;
+    }    
+    case BINANCE_API_ENDPOINT.getMarginAccountAll: {
+      binanceInstance.getMarginIsolatedInfos().then(result => {
+        res.status(200).json(result.data);
+      }).catch(err => {
+        console.log('errror', err);
+      })
+      break;
     }
     default: {
       res.status(404).json({ message: `User with id: ${id} not found.` });

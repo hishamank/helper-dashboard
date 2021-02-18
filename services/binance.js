@@ -184,6 +184,10 @@ class BinanceService {
     asset: asset,
     isolatedSymbol: isIsolated,
     timestamp: new Date().getTime()
+  }, true);
+
+  getMarginIsolatedInfos = (symbols = undefined) => this.getBinanceApi('/sapi/v1/margin/isolated/account', {
+    timestamp: new Date().getTime()
   }, true)
 
   createNewListenKey = (isMargin, isIsolated) => this.postBinanceApi(`${isMargin ? '/sapi/v1/' : '/api/v3/'}userDataStream${isIsolated ? '/isolated' : ''}`, {});

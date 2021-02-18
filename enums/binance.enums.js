@@ -23,5 +23,6 @@ export const BALACES_TYPE = {
 }
 
 export const BINANCE_API_ENDPOINT = {
-  getMarginAccount: 'getMarginAccount'
+  getMarginAccount: 'getMarginAccount',
+  getMarginAccountAll: 'getMarginAccountAll'
 }
