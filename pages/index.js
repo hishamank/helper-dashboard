@@ -3,14 +3,16 @@ import OrdersTable from '../components/OrdersTable';
 import EnhancedTable from '../components/Table/EnhancedTable';
 import binanceService from '../services/binance'
 import Axios from 'axios';
+import dynamic from 'next/dynamic'
 
-
+const ChartsComponentWithNoSSR = dynamic(() => import('../components/Chart'), { ssr: false });
 
 export default class Home extends Component {
   state = {
     rows: [],
     pairOrders: [],
-    error: null
+    error: null,
+    selectedAsset: null
   }
   componentDidMount() {
     if (!this.props.error && this.props.data && this.props.data.assets.length > 0) {
@@ -26,10 +28,15 @@ export default class Home extends Component {
   }
   handleItemClick = (asset) => {
     console.log('---- Asset', asset);
+    this.setState({
+      selectedAsset: asset
+    })
+  }
+  getOrders = (asset) => {
     Axios.get('/api/getTrades/' + asset).then(res => {
       console.log('🚀 ~ file: index.js ~ line 36 ~ Home ~ Axios.get ~ res', res);
       this.setState({
-        pairOrders: [...res.data]
+        pairOrders: [...res.data],
       }, () => console.log(this.state))
     })
   }
@@ -38,11 +45,13 @@ export default class Home extends Component {
       return <div>Something went wrong, or no Assets</div>
     }
     return (
-      <div>
-        <EnhancedTable rows={this.state.rows}  itemClick={this.handleItemClick}/>
-        <OrdersTable rows={this.state.pairOrders}></OrdersTable>
+      <div style={{display: 'flex', flexDirection: 'column'}}>
+        <EnhancedTable rows={this.state.rows}  itemClick={this.handleItemClick} getOrders={this.getOrders} selectedAsset={this.state.selectedAsset}/>
+        <div style={{display: 'flex', height: '500px'}}>
+          <ChartsComponentWithNoSSR symbol={this.state.selectedAsset || "BTC.D"}/>
+          {this.state.pairOrders && <OrdersTable rows={this.state.pairOrders}></OrdersTable>}
+        </div>
       </div>
-      
     )
   }
 }

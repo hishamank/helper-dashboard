@@ -13,7 +13,7 @@ import Switch from '@material-ui/core/Switch';
 import EnhancedTableHead from './EnhancedTableHead';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
 import { Button } from '@material-ui/core';
-
+import BarChartIcon from '@material-ui/icons/BarChart';
 
 
 function descendingComparator(a, b, orderBy) {
@@ -49,8 +49,8 @@ const headCells = [
   { id: 'liquidatePrice', numeric: true, disablePadding: false, label: 'Liquidation Price' },
   { id: 'liquidateRate', numeric: true, disablePadding: false, label: 'Liquidation Rate' },
   { id: 'marginLevel', numeric: true, disablePadding: false, label: 'Margin Level' },
+  { id: 'Entry', numeric: true, disablePadding: false, label: 'Entry Price' },
   { id: 'binanceButton', numeric: false, disablePadding: false, label: '' },
-  { id: 'Entry', numeric: true, disablePadding: false, label: '' }
 
 ];
 
@@ -80,19 +80,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function EnhancedTable(props) {
+function EnhancedTable({rows, itemClick, selectedAsset}) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(props.rows.length || 5);
+  const [dense, setDense] = React.useState(true);
+  const [rowsPerPage, setRowsPerPage] = React.useState(rows.length || 5);
 
   useEffect(()=>{
     const res = JSON.parse(localStorage.getItem('assetsEntries'));
     setAssetsEntries(res);
-  },[props.rows])
+  },[rows])
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -101,7 +101,7 @@ function EnhancedTable(props) {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = props.rows.map((n) => n.symbol);
+      const newSelecteds = rows.map((n) => n.symbol);
       setSelected(newSelecteds);
       return;
     }
@@ -110,7 +110,6 @@ function EnhancedTable(props) {
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
-    props.itemClick(name);
     let newSelected = [];
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, name);
@@ -125,7 +124,6 @@ function EnhancedTable(props) {
       );
     }
     setSelected(newSelected);
-
   };
 
   const handleChangePage = (event, newPage) => {
@@ -143,7 +141,7 @@ function EnhancedTable(props) {
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.rows.length - page * rowsPerPage);
+  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
   const [assetsEntries, setAssetsEntries] = useState({});
 
@@ -182,11 +180,11 @@ function handleOnBlur(){
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={props.rows.length}
+              rowCount={rows.length}
               headCells={headCells}
             />
             <TableBody>
-              {stableSort(props.rows, getComparator(order, orderBy))
+              {stableSort(rows, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.symbol);
@@ -195,7 +193,6 @@ function handleOnBlur(){
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.symbol)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
@@ -206,6 +203,7 @@ function handleOnBlur(){
                         <Checkbox
                           checked={isItemSelected}
                           inputProps={{ 'aria-labelledby': labelId }}
+                          onChange={(event) => handleClick(event, row.symbol)}
                         />
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row" padding="none">
@@ -215,7 +213,6 @@ function handleOnBlur(){
                       <TableCell align="right">{row.liquidatePrice}</TableCell>
                       <TableCell align="right">{row.liquidateRate}</TableCell>
                       <TableCell align="right" style={row.marginLevel > 1.5 ? { color: 'green' } : row.marginLevel < 1.3 ? { color: 'red' } : { color: 'yellow' }} >{row.marginLevel}</TableCell>
-                      <TableCell align="right"><Button a href={`https://www.binance.com/en/trade/${row.baseAsset && row.baseAsset.asset}_${row.quoteAsset && row.quoteAsset.asset}`} target="_blank" >Binance</Button><Button style={{ margin: '0 10px' }} a href={`https://www.tradingview.com/chart/?symbol=BINANCE:${row.symbol}`} variant="contained" color="primary" target="_blank">TradingV</Button></TableCell>
                       <TableCell align="right"> 
                         <input onBlur={handleOnBlur} onChange={e => HandleInputChange(e, row)} onClick={(e) => e.stopPropagation()} style={{
                         background: 'gray',
@@ -226,6 +223,11 @@ function handleOnBlur(){
                       }} type="number"
                       value={assetsEntries && (assetsEntries[row.symbol] || 0)}
                       ></input></TableCell>
+                      <TableCell align="right" style={{display: 'flex', alignItems: 'center'}}>
+                        <Button a href={`https://www.binance.com/en/trade/${row.baseAsset && row.baseAsset.asset}_${row.quoteAsset && row.quoteAsset.asset}`} target="_blank" >Binance</Button>
+                        <Button style={{ margin: '0 10px' }} a href={`https://www.tradingview.com/chart/?symbol=BINANCE:${row.symbol}`} variant="contained" color="primary" target="_blank">TradingV</Button>
+                        <BarChartIcon className={selectedAsset === row.symbol ? "charts-icon selected" : "charts-icon"} onClick={() => selectedAsset === row.symbol || itemClick(row.symbol)}></BarChartIcon>
+                      </TableCell>
                     </TableRow>
 
                   );
@@ -241,17 +243,17 @@ function handleOnBlur(){
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={props.rows.length}
+          count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
       </Paper>
-      <FormControlLabel
+      {/* <FormControlLabel
         control={<Switch checked={dense} onChange={handleChangeDense} />}
         label="Dense padding"
-      />
+      /> */}
     </div>
   );
 }

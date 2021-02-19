@@ -14,3 +14,15 @@ a {
 * {
   box-sizing: border-box;
 }
+
+
+.charts-icon {
+  cursor: pointer;
+  &.selected {
+    color: #e8920e;
+    cursor: default;
+  }
+  &:hover {
+    color: #e8920e;
+  }
+}
