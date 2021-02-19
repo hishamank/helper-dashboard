@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -49,7 +49,8 @@ const headCells = [
   { id: 'liquidatePrice', numeric: true, disablePadding: false, label: 'Liquidation Price' },
   { id: 'liquidateRate', numeric: true, disablePadding: false, label: 'Liquidation Rate' },
   { id: 'marginLevel', numeric: true, disablePadding: false, label: 'Margin Level' },
-  { id: 'binanceButton', numeric: false, disablePadding: false, label: '' }
+  { id: 'binanceButton', numeric: false, disablePadding: false, label: '' },
+  { id: 'Entry', numeric: true, disablePadding: false, label: '' }
 
 ];
 
@@ -79,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
- function EnhancedTable(props) {
+function EnhancedTable(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -88,6 +89,10 @@ const useStyles = makeStyles((theme) => ({
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(props.rows.length || 5);
 
+  useEffect(()=>{
+    const res = JSON.parse(localStorage.getItem('assetsEntries'));
+    setAssetsEntries(res);
+  },[props.rows])
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -140,6 +145,25 @@ const useStyles = makeStyles((theme) => ({
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, props.rows.length - page * rowsPerPage);
 
+  const [assetsEntries, setAssetsEntries] = useState({});
+
+  function HandleInputChange(event, asset) {
+    console.log('\inside function', event.target.value)
+    if (event.target.value && event.target.value.length > 0) {
+      let newAssetsEntries = {
+        ...assetsEntries
+      };
+      newAssetsEntries[asset.symbol] = event.target.value;
+      setAssetsEntries(newAssetsEntries);
+      console.log('statae', assetsEntries);
+    }
+  }
+
+
+function handleOnBlur(){
+  localStorage.setItem('assetsEntries', JSON.stringify(assetsEntries))
+}
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -159,7 +183,7 @@ const useStyles = makeStyles((theme) => ({
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={props.rows.length}
-              headCells = {headCells}
+              headCells={headCells}
             />
             <TableBody>
               {stableSort(props.rows, getComparator(order, orderBy))
@@ -190,12 +214,21 @@ const useStyles = makeStyles((theme) => ({
                       <TableCell align="right">{row.indexPrice}</TableCell>
                       <TableCell align="right">{row.liquidatePrice}</TableCell>
                       <TableCell align="right">{row.liquidateRate}</TableCell>
-                      <TableCell align="right"style={row.marginLevel > 1.5 ? {color: 'green'} : row.marginLevel < 1.3 ? {color: 'red'} : {color : 'yellow'}} >{row.marginLevel}</TableCell>
-                      <TableCell align="right"><Button a href={`https://www.binance.com/en/trade/${row.baseAsset && row.baseAsset.asset}_${row.quoteAsset && row.quoteAsset.asset}`} target="_blank" >Binance</Button></TableCell>
-                      <TableCell align="right"><Button a href={'https://www.tradingview.com/chart/?symbol=BINANCE:${row.symbol}'} variant="contained" color="primary" target="_blank">TradingView</Button></TableCell>
+                      <TableCell align="right" style={row.marginLevel > 1.5 ? { color: 'green' } : row.marginLevel < 1.3 ? { color: 'red' } : { color: 'yellow' }} >{row.marginLevel}</TableCell>
+                      <TableCell align="right"><Button a href={`https://www.binance.com/en/trade/${row.baseAsset && row.baseAsset.asset}_${row.quoteAsset && row.quoteAsset.asset}`} target="_blank" >Binance</Button><Button style={{ margin: '0 10px' }} a href={`https://www.tradingview.com/chart/?symbol=BINANCE:${row.symbol}`} variant="contained" color="primary" target="_blank">TradingV</Button></TableCell>
+                      <TableCell align="right"> 
+                        <input onBlur={handleOnBlur} onChange={e => HandleInputChange(e, row)} onClick={(e) => e.stopPropagation()} style={{
+                        background: 'gray',
+                        width: '100px',
+                        height: '100%',
+                        color: 'white',
+                        border: '1px solid white'
+                      }} type="number"
+                      value={assetsEntries[row.symbol]}
+                      ></input></TableCell>
                     </TableRow>
-                    
-                  );  
+
+                  );
                 })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
@@ -224,4 +257,4 @@ const useStyles = makeStyles((theme) => ({
 }
 
 
-export default  EnhancedTable;
+export default EnhancedTable;
