@@ -191,7 +191,8 @@ const useStyles = makeStyles((theme) => ({
                       <TableCell align="right">{row.liquidatePrice}</TableCell>
                       <TableCell align="right">{row.liquidateRate}</TableCell>
                       <TableCell align="right"style={row.marginLevel > 1.5 ? {color: 'green'} : row.marginLevel < 1.3 ? {color: 'red'} : {color : 'yellow'}} >{row.marginLevel}</TableCell>
-                      <TableCell align="right"><Button a href={`https://www.binance.com/en/trade/${row.baseAsset && row.baseAsset.asset}_${row.quoteAsset && row.quoteAsset.asset}`} >Binance</Button></TableCell>
+                      <TableCell align="right"><Button a href={`https://www.binance.com/en/trade/${row.baseAsset && row.baseAsset.asset}_${row.quoteAsset && row.quoteAsset.asset}`} target="_blank" >Binance</Button></TableCell>
+                      <TableCell align="right"><Button a href={'https://www.tradingview.com/chart/?symbol=BINANCE:${row.symbol}'} variant="contained" color="primary" target="_blank">TradingView</Button></TableCell>
                     </TableRow>
                     
                   );  
