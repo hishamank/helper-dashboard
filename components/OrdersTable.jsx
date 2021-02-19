@@ -39,7 +39,7 @@ function OrdersTable(props) {
               </TableCell>
               <TableCell align="right">{row.price}</TableCell>
               <TableCell align="right">{row.qty}</TableCell>
-              <TableCell align="right">{ new Date = row.time.toISOString()}</TableCell>
+              <TableCell align="right">{ new Date(row.time).toDateString()}</TableCell>
               
 
             </TableRow>
