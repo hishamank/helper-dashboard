@@ -12,13 +12,15 @@ export default class Home extends Component {
     rows: [],
     pairOrders: [],
     error: null,
-    selectedAsset: null
+    selectedAsset: null,
+    showingChart: false,
+    showingOrders: false
   }
   componentDidMount() {
     if (!this.props.error && this.props.data && this.props.data.assets.length > 0) {
       this.setState({
         rows: [...this.props.data.assets.filter(asset => asset.liquidatePrice !== '0')]
-      }, () => console.log(this.state))
+      }, () => console.log('componentDidMount State update', this.state))
     } else {
       console.log('Errorr', this.props.error)
       this.setState({
@@ -26,19 +28,37 @@ export default class Home extends Component {
       })
     }
   }
-  handleItemClick = (asset) => {
+  showChart = (asset) => {
     console.log('---- Asset', asset);
-    this.setState({
-      selectedAsset: asset
-    })
+    if(this.state.showingChart) {
+      this.setState({
+        selectedAsset: this.state.showingOrders ? asset : null,
+        showingChart: false
+      })
+    } else {
+      this.setState({
+        selectedAsset: asset,
+        showingChart: true
+      })
+    }
   }
   getOrders = (asset) => {
-    Axios.get('/api/getTrades/' + asset).then(res => {
-      console.log('🚀 ~ file: index.js ~ line 36 ~ Home ~ Axios.get ~ res', res);
-      this.setState({
-        pairOrders: [...res.data],
-      }, () => console.log(this.state))
-    })
+    if (this.state.showingOrders) {
+      this.setState((state) => ({
+        pairOrders: [],
+        selectedAsset: state.showingCharts ? asset : null,
+        showingOrders: false
+      }))
+    } else {
+      Axios.get('/api/getTrades/' + asset).then(res => {
+        console.log('🚀 ~ file: index.js ~ line 36 ~ Home ~ Axios.get ~ res', res);
+        this.setState((state, props) => ({
+          pairOrders: [...res.data],
+          selectedAsset: asset,
+          showingOrders: true
+        }), () => console.log('getOrders State update',this.state))
+      })
+    }
   }
   render() {
     if(this.state.error) {
@@ -46,10 +66,10 @@ export default class Home extends Component {
     }
     return (
       <div style={{display: 'flex', flexDirection: 'column'}}>
-        <EnhancedTable rows={this.state.rows}  itemClick={this.handleItemClick} getOrders={this.getOrders} selectedAsset={this.state.selectedAsset}/>
+        <EnhancedTable rows={this.state.rows}  showChart={this.showChart} getOrders={this.getOrders} selectedAsset={this.state.showingChart} showingOrders={this.state.showingOrders} showingChart={this.state.showingChart}/>
         <div style={{display: 'flex', height: '500px'}}>
-          <ChartsComponentWithNoSSR symbol={this.state.selectedAsset || "BTC.D"}/>
-          {this.state.pairOrders && <OrdersTable rows={this.state.pairOrders}></OrdersTable>}
+          <ChartsComponentWithNoSSR symbol={this.state.selectedAsset && this.state.showingChart || 'BTC.D'}/>
+          {<OrdersTable orders={this.state.pairOrders}></OrdersTable>}
         </div>
       </div>
     )

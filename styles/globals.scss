@@ -18,6 +18,9 @@ a {
 
 .charts-icon {
   cursor: pointer;
+  margin: 0em 5px;
+  font-size: 30px !important;
+  margin-bottom: 3px;
   &.selected {
     color: #e8920e;
     cursor: default;
@@ -25,4 +28,41 @@ a {
   &:hover {
     color: #e8920e;
   }
+}
+
+.opacity-hover:hover {
+  opacity: 0.6;
+}
+
+.MuiPaper-root {
+  background: #171C27 !important;
+}
+
+
+.green-color {
+  color: rgb(3, 166, 109) !important;
+}
+
+.orange-color {
+  color: rgb(255, 126, 13) !important;
+}
+
+.red-color {
+  color: rgb(228, 63, 63) !important;
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.MuiOutlinedInput-input {
+  padding: 5.5px 10px !important;
+  width: 7em !important;
 }

@@ -8,13 +8,14 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+// import FormControlLabel from '@material-ui/core/FormControlLabel';
+// import Switch from '@material-ui/core/Switch';
 import EnhancedTableHead from './EnhancedTableHead';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
-import { Button } from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
+import TextField from '@material-ui/core/TextField';
 import BarChartIcon from '@material-ui/icons/BarChart';
-
+import ReceiptIcon from '@material-ui/icons/Receipt';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -80,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function EnhancedTable({rows, itemClick, selectedAsset}) {
+function EnhancedTable({rows, showChart, getOrders, selectedAsset, showingOrders, showingChart}) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -212,21 +213,24 @@ function handleOnBlur(){
                       <TableCell align="right">{row.indexPrice}</TableCell>
                       <TableCell align="right">{row.liquidatePrice}</TableCell>
                       <TableCell align="right">{row.liquidateRate}</TableCell>
-                      <TableCell align="right" style={row.marginLevel > 1.5 ? { color: 'green' } : row.marginLevel < 1.3 ? { color: 'red' } : { color: 'yellow' }} >{row.marginLevel}</TableCell>
+                      <TableCell align="right" className={row.marginLevel > 1.5 ? 'green-color' : row.marginLevel < 1.3 ? 'red-color' : 'orange-color'} >{row.marginLevel}</TableCell>
                       <TableCell align="right"> 
-                        <input onBlur={handleOnBlur} onChange={e => HandleInputChange(e, row)} onClick={(e) => e.stopPropagation()} style={{
-                        background: 'gray',
-                        width: '100px',
-                        height: '100%',
-                        color: 'white',
-                        border: '1px solid white'
-                      }} type="number"
-                      value={assetsEntries && (assetsEntries[row.symbol] || 0)}
-                      ></input></TableCell>
+                      <TextField id="outlined-basic" label="" variant="outlined" onBlur={handleOnBlur} onChange={e => HandleInputChange(e, row)} onClick={(e) => e.stopPropagation()} type="number"
+                      value={assetsEntries && (assetsEntries[row.symbol] || 0)}/>
+                      </TableCell>
                       <TableCell align="right" style={{display: 'flex', alignItems: 'center'}}>
-                        <Button a href={`https://www.binance.com/en/trade/${row.baseAsset && row.baseAsset.asset}_${row.quoteAsset && row.quoteAsset.asset}`} target="_blank" >Binance</Button>
-                        <Button style={{ margin: '0 10px' }} a href={`https://www.tradingview.com/chart/?symbol=BINANCE:${row.symbol}`} variant="contained" color="primary" target="_blank">TradingV</Button>
-                        <BarChartIcon className={selectedAsset === row.symbol ? "charts-icon selected" : "charts-icon"} onClick={() => selectedAsset === row.symbol || itemClick(row.symbol)}></BarChartIcon>
+                        <a className="opacity-hover" href={`https://www.binance.com/en/trade/${row.baseAsset && row.baseAsset.asset}_${row.quoteAsset && row.quoteAsset.asset}`}  target="_blank">
+                            <img style={{width: '22px', margin: '0px 10px'}} src="/binance-icon.svg" />
+                          </a>
+                        <a className="opacity-hover" href={`https://www.tradingview.com/chart/?symbol=BINANCE:${row.symbol}`} target="_blank">
+                          <img src="/trading-view-icon.svg"/>
+                        </a>
+                      <Tooltip title="Chart" placement="top"> 
+                        <BarChartIcon className={selectedAsset === row.symbol && showingChart  ? "charts-icon selected" : "charts-icon"} onClick={() => selectedAsset === row.symbol && showingChart || showChart(row.symbol)}></BarChartIcon>
+                      </Tooltip>
+                      <Tooltip title="Orders" placement="top">
+                        <ReceiptIcon className={selectedAsset === row.symbol && showingOrders ? "charts-icon selected" : "charts-icon"} onClick={() => selectedAsset === row.symbol && showingOrders || getOrders(row.symbol)}></ReceiptIcon>
+                      </Tooltip>
                       </TableCell>
                     </TableRow>
 

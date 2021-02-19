@@ -15,35 +15,37 @@ const useStyles = makeStyles({
 });
 
 
-function OrdersTable(props) {
-    console.log("PROPS", props)
+function OrdersTable({orders}) {
+  console.log('🚀 ~ file: OrdersTable.jsx ~ line 19 ~ OrdersTable ~ orders', orders);
   const classes = useStyles();
+  const getReadableTime = (timestamp) => {
+    let isodate = new Date(timestamp).toISOString();
+    isodate = isodate.split('T');
+    const cleanedSeconds = isodate[1].split('.')[0];
+    return isodate[0] + ' ' + cleanedSeconds;
+  }
   return (
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Position</TableCell>
-            <TableCell align="right">Price</TableCell>
-            <TableCell align="right">Quantity</TableCell>
-            <TableCell align="right">Time</TableCell>
-            
+            <TableCell>Time</TableCell>
+            <TableCell>Side</TableCell>
+            <TableCell>Price</TableCell>
+            <TableCell>Quantity</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {Array(props.rows).map((row) => (
-            <TableRow key={row.id}  >
-              <TableCell style={row.isBuyer ? {color:'green'} : {color:"red"}} component="th" scope="row">
-              
-                {row.isBuyer ? "BUY" : "SELL"}
-              </TableCell>
-              <TableCell align="right">{row.price}</TableCell>
-              <TableCell align="right">{row.qty}</TableCell>
-              <TableCell align="right">{ new Date(row.time).toDateString()}</TableCell>
-              
-
+          {orders && orders.length > 0 ? orders.map((row) => {
+            const classname = row.isBuyer ? 'green-color' : 'red-color'
+            return (
+            <TableRow key={row.id}>
+              <TableCell className={classname}> {getReadableTime(row.time)}</TableCell>
+              <TableCell className={classname}> {row.isBuyer ? 'BUY' : 'SELL'}</TableCell>
+              <TableCell className={classname}> {row.price}</TableCell>
+              <TableCell className={classname}> {row.qty}</TableCell>
             </TableRow>
-          ))}
+          )}): (<div style={{width: '100%', marginTop: '1em', fontSize: '1.2em', color: 'lightgrey'}}> You have to select an asset </div>)}
         </TableBody>
       </Table>
     </TableContainer>
