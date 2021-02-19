@@ -60,7 +60,7 @@ export async function getServerSideProps(context) {
     return {
       props: {data: res.data}, // will be passed to the page component as props
     }
-  } catch (er) {
+  } catch (err) {
     return {
       props: {error: err}, // will be passed to the page component as props
     }
