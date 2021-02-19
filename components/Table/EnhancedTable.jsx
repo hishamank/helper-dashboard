@@ -12,6 +12,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import EnhancedTableHead from './EnhancedTableHead';
 import EnhancedTableToolbar from './EnhancedTableToolbar';
+import { Button } from '@material-ui/core';
 
 
 
@@ -41,6 +42,16 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
+
+const headCells = [
+  { id: 'symbol', numeric: false, disablePadding: true, label: 'Pair' },
+  { id: 'indexPrice', numeric: true, disablePadding: false, label: 'Price' },
+  { id: 'liquidatePrice', numeric: true, disablePadding: false, label: 'Liquidation Price' },
+  { id: 'liquidateRate', numeric: true, disablePadding: false, label: 'Liquidation Rate' },
+  { id: 'marginLevel', numeric: true, disablePadding: false, label: 'Margin Level' },
+  { id: 'binanceButton', numeric: false, disablePadding: false, label: '' }
+
+];
 
 
 
@@ -148,7 +159,7 @@ const useStyles = makeStyles((theme) => ({
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={props.rows.length}
-              headCells = {props.headCells}
+              headCells = {headCells}
             />
             <TableBody>
               {stableSort(props.rows, getComparator(order, orderBy))
@@ -180,8 +191,10 @@ const useStyles = makeStyles((theme) => ({
                       <TableCell align="right">{row.liquidatePrice}</TableCell>
                       <TableCell align="right">{row.liquidateRate}</TableCell>
                       <TableCell align="right"style={row.marginLevel > 1.5 ? {color: 'green'} : row.marginLevel < 1.3 ? {color: 'red'} : {color : 'yellow'}} >{row.marginLevel}</TableCell>
+                      <TableCell align="right"><Button a href={`https://www.binance.com/en/trade/${row.baseAsset && row.baseAsset.asset}_${row.quoteAsset && row.quoteAsset.asset}`} >Binance</Button></TableCell>
                     </TableRow>
-                  );
+                    
+                  );  
                 })}
               {emptyRows > 0 && (
                 <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>

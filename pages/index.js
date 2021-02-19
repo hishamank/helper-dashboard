@@ -4,13 +4,7 @@ import EnhancedTable from '../components/Table/EnhancedTable';
 import binanceService from '../services/binance'
 import Axios from 'axios';
 
-const headCells = [
-  { id: 'symbol', numeric: false, disablePadding: true, label: 'Pair' },
-  { id: 'indexPrice', numeric: true, disablePadding: false, label: 'Price' },
-  { id: 'liquidatePrice', numeric: true, disablePadding: false, label: 'Liquidation Price' },
-  { id: 'liquidateRate', numeric: true, disablePadding: false, label: 'Liquidation Rate' },
-  { id: 'marginLevel', numeric: true, disablePadding: false, label: 'Margin Level' },
-];
+
 
 export default class Home extends Component {
   state = {
@@ -45,7 +39,7 @@ export default class Home extends Component {
     }
     return (
       <div>
-        <EnhancedTable rows={this.state.rows} headCells={headCells} itemClick={this.handleItemClick}/>
+        <EnhancedTable rows={this.state.rows}  itemClick={this.handleItemClick}/>
         <OrdersTable rows={this.state.pairOrders}></OrdersTable>
       </div>
       
@@ -59,6 +53,7 @@ export async function getServerSideProps(context) {
     const res = await binanceInstance.getMarginIsolatedInfos();
     return {
       props: {data: res.data}, // will be passed to the page component as props
+      
     }
   } catch (er) {
     return {
