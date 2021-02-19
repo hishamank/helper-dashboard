@@ -224,7 +224,7 @@ function handleOnBlur(){
                         color: 'white',
                         border: '1px solid white'
                       }} type="number"
-                      value={assetsEntries[row.symbol]}
+                      value={assetsEntries && (assetsEntries[row.symbol] || 0)}
                       ></input></TableCell>
                     </TableRow>
 
